@@ -1,8 +1,9 @@
 import React from 'react';
 import avatarEdit from '../../images/avatar-edit.svg';
-import Card from '../Card/Card.js'
+import Card from '../Card/Card.js';
+import {  useHistory } from 'react-router-dom';
 import { UserContext } from '../../contexts/CurrentUserContext.js';
-
+import headerLogo from '../../images/header-logo.svg';
 
 
 
@@ -11,7 +12,7 @@ function Main(props) {
   const [name, setName] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [avatar, setAvatar] = React.useState('');
-
+  const history = useHistory();
 
 React.useEffect(() => {
   currentUser && setName(currentUser.name)
@@ -19,9 +20,17 @@ React.useEffect(() => {
   currentUser && setAvatar(currentUser.avatar)
 }, [currentUser]);
 
-
+function signOut(){
+  localStorage.removeItem('token');
+  history.push('/sign-in');
+}
 
     return (
+      <>
+      <header className="header">
+      <img src={headerLogo} alt="Логотип сайта" className="header__logo" />
+      <p className="header__email">{props.email}<span><button onClick={signOut} className="header__link header__button">Выйти</button></span></p>
+      </header>
 <main className="content">
             <div className="profile">
 
@@ -46,6 +55,7 @@ React.useEffect(() => {
                 </ul>
             </div>
         </main>
+        </>
     );
 }
 

@@ -1,4 +1,5 @@
 import React, { useState,  useCallback} from 'react';
+import { BrowserRouter, Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Header from './header/Header';
 import Main from './main/Main';
 import Footer from './footer/Footer';
@@ -6,11 +7,17 @@ import PopupWithForm from './PopupWithForm/PopupWithForm.js';
 import EditProfilePopup from './EditProfilePopup/EditProfilePopup.js';
 import ImagePopup from './ImagePopup/ImagePopup.js';
 import api from '../utils/Api.js';
+import SignIn from './SignIn/SignIn';
+import SignUp from './SignUp/SignUp';
 import { UserContext} from '../contexts/CurrentUserContext.js';
 import EditAvatarPopup from './EditAvatarPopup/EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup/AddPlacePopup.js';
+import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
+import {mestoAuth} from './Auth/Auth';
 
-function App() {
+function App(props) {
+    const [loggedIn, setloggedIn] = useState(false);
+    const [userEmail, setuserEmail] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setisAddPlacePopupOpen] = useState(false);
@@ -131,16 +138,63 @@ function handleCardClick(name, link){
     setselectedCard({name, link})
 }
 
+function handleLogin(email){
+  setuserEmail(email)
+  setloggedIn(true)
+}
 
+
+function tokenCheck() {
+  if (localStorage.getItem('token')){
+    const jwt = localStorage.getItem('token');
+    mestoAuth.getContent(jwt).then((res) => {
+      if (res){
+        const jwt = res;
+        setloggedIn(true)
+        setuserEmail(jwt.data.email)
+        props.history.push('/main');
+
+      }
+    });
+  }
+}
+
+function componentDidMount() {
+    tokenCheck();
+  };
+
+
+  React.useEffect(()=>{
+    componentDidMount()
+  },[])
 
     return (
        <UserContext.Provider value={currentUser}>
     <div className="body">
     <div className="page">
-        <Header />
-        <Main   onCardLike={handleCardLike} onCardDelete={handleDeleteCard} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} cards={cards}  onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick}/>
-        <Footer/>
+        <Switch>
 
+        <ProtectedRoute
+        onCardLike={handleCardLike} email={userEmail} onCardDelete={handleDeleteCard} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} cards={cards}  onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick}
+          path="/main"
+          loggedIn={loggedIn}
+          component={Main}
+        />
+
+        <Route exact path="/">
+    {loggedIn ? <Redirect to="/main" /> : <Redirect to="/sign-in" />}
+        </Route>
+
+        <Route path="/sign-in">
+        <SignIn handleLogin={handleLogin} />
+        </Route>
+
+        <Route path="/sign-up">
+       <SignUp />
+       </Route>
+
+        </Switch>
+        <Footer/>
         <ImagePopup card={selectedCard} isOpen={isImagePopupOpen} onClose={closeAllPopups}/>
         <PopupWithForm name="delete" onClose={closeAllPopups}   namePopup="Вы уверены?" btn="delete-card" nameBtn="Да"  />
         <EditAvatarPopup  onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
@@ -149,8 +203,9 @@ function handleCardClick(name, link){
     </div>
 
     </div>
+
     </UserContext.Provider>
     );
 }
 
-export default App;
+export default withRouter(App);
