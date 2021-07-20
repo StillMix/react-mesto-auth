@@ -5,6 +5,14 @@ export default class Auth {
       this._headers = config.headers;
   }
 
+  _check(res) {
+    if (res.status === 201) {
+        return res.json();
+    } else {
+        return Promise.reject("Произошла ошибка");
+    }
+}
+
   register(password, email) {
     return fetch(`${this._url}/signup`, {
       method: 'POST',
@@ -14,18 +22,11 @@ export default class Auth {
           email: email,
         })
     }).then((response) => {
-      try {
-        if (response.status === 201){
-          return response.json();
-        }
-      } catch(e){
-        return (e)
-      }
-    })
+      return this._check(response)
+  })
     .then((res) => {
       return res;
     })
-    .catch((err) => console.log(err));
 }
 
 authorize(password, email) {
@@ -48,7 +49,6 @@ authorize(password, email) {
       return data
     }
   })
-  .catch(err => console.log(err))
 }
 
 getContent(token){
@@ -62,7 +62,6 @@ getContent(token){
   })
   .then(res => {return res.json()})
   .then(data => {return data})
-  .catch(err => console.log(err))
 }
 
 }

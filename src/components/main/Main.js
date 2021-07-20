@@ -1,6 +1,7 @@
 import React from 'react';
 import avatarEdit from '../../images/avatar-edit.svg';
 import Card from '../Card/Card.js';
+import Header from '../header/Header';
 import {  useHistory } from 'react-router-dom';
 import { UserContext } from '../../contexts/CurrentUserContext.js';
 import headerLogo from '../../images/header-logo.svg';
@@ -27,10 +28,9 @@ function signOut(){
 
     return (
       <>
-      <header className="header">
-      <img src={headerLogo} alt="Логотип сайта" className="header__logo" />
-      <p className="header__email">{props.email}<span><button onClick={signOut} className="header__link header__button">Выйти</button></span></p>
-      </header>
+        <Header>
+        <p className="header__email">{props.email}<span><button onClick={signOut} className="header__link header__button">Выйти</button></span></p>
+        </Header>
 <main className="content">
             <div className="profile">
 

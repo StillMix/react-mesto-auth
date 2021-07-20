@@ -13,7 +13,8 @@ import { UserContext} from '../contexts/CurrentUserContext.js';
 import EditAvatarPopup from './EditAvatarPopup/EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup/AddPlacePopup.js';
 import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
-import {mestoAuth} from './Auth/Auth';
+import {mestoAuth} from '../utils/Auth';
+import InfoToolTip from './InfoToolTip/InfoToolTip';
 
 function App(props) {
     const [loggedIn, setloggedIn] = useState(false);
@@ -23,6 +24,7 @@ function App(props) {
     const [isAddPlacePopupOpen, setisAddPlacePopupOpen] = useState(false);
     const [isEditAvatarPopupOpen, setisEditAvatarPopupOpen] = useState(false);
     const [isImagePopupOpen, setisImagePopupOpen] = useState(false);
+    const [isInfoToolTip, setisInfoToolTip] = useState(false);
     const [selectedCard, setselectedCard] = useState(null);
 
     const ESCClose = useCallback((evt) => {
@@ -36,6 +38,7 @@ function closeAllPopups(){
     setisEditAvatarPopupOpen(false);
     setisAddPlacePopupOpen(false);
     setisImagePopupOpen(false);
+    setisInfoToolTip(false)
     setselectedCard(null);
     document.removeEventListener('keyup', ESCClose);
 }
@@ -159,13 +162,38 @@ function tokenCheck() {
   }
 }
 
-function componentDidMount() {
-    tokenCheck();
-  };
+function login(log) {
+  if (!log){
+    return;
+  }
+  mestoAuth.authorize(log.PasswordInput,log.EmailInput).then((data) => {
+    if (data.token){
+          handleLogin(log.EmailInput);
+          props.history.push('/main')
+    }
+  })
+  .catch(err => console.log(err));
+}
+
+
+function register(reg) {
+  mestoAuth.register(reg.PasswordInput,reg.EmailInput).then((res) => {
+    if(res){
+        props.history.push('/sign-in');
+
+    } else {
+      setisInfoToolTip(true)
+
+    }
+}).catch(err => ()=>{
+  console.log(err)
+  setisInfoToolTip(true)
+});
+}
 
 
   React.useEffect(()=>{
-    componentDidMount()
+    tokenCheck();
   },[])
 
     return (
@@ -186,15 +214,16 @@ function componentDidMount() {
         </Route>
 
         <Route path="/sign-in">
-        <SignIn handleLogin={handleLogin} />
+        <SignIn handleLogin={handleLogin} handleSubmit={login}/>
         </Route>
 
         <Route path="/sign-up">
-       <SignUp />
+       <SignUp handleSubmit={register}/>
        </Route>
 
         </Switch>
         <Footer/>
+        <InfoToolTip onClose={closeAllPopups} isOpen={isInfoToolTip}/>
         <ImagePopup card={selectedCard} isOpen={isImagePopupOpen} onClose={closeAllPopups}/>
         <PopupWithForm name="delete" onClose={closeAllPopups}   namePopup="Вы уверены?" btn="delete-card" nameBtn="Да"  />
         <EditAvatarPopup  onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />

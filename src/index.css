@@ -54,6 +54,16 @@
 
 /**/
 
+@import url(./blocks/infoToolTip/infoToolTip.css);
+@import url(./blocks/infoToolTip/__btn/infoToolTip__btn.css);
+@import url(./blocks/infoToolTip/__image/infoToolTip__image.css);
+@import url(./blocks/infoToolTip/__error-btn/infoToolTip__error-btn.css);
+@import url(./blocks/infoToolTip/__text/infoToolTip__text.css);
+@import url(./blocks/infoToolTip/__background/infoToolTip__background.css);
+@import url(./blocks/infoToolTip/__overlay/infoToolTip__overlay.css);
+
+/**/
+
 @import url(./blocks/popup/popup.css);
 @import url(./blocks/popup/__background/popup__background.css);
 @import url(./blocks/popup/__overlay/popup__overlay.css);
@@ -95,3 +105,4 @@
 @import url(./blocks/register/__link/register__text.css);
 @import url(./blocks/register/__link/register__signin.css);
 @import url(./blocks/register/__login-link/register__login-link.css);
+
