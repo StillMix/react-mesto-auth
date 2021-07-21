@@ -37,9 +37,9 @@ authorize(password, email) {
         password: password,
         email: email,
       })
-  }) .then((response => {
-    return response.json()
-  }))
+  }) .then((response) => {
+      return this._check(response)
+  })
   .then((data) => {
     console.log(data)
     if (data.token){
@@ -60,7 +60,9 @@ getContent(token){
         'Authorization': `Bearer ${token}`
       }
   })
-  .then(res => {return res.json()})
+  .then((response) => {
+    return this._check(response)
+})
   .then(data => {return data})
 }
 

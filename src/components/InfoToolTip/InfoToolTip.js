@@ -4,6 +4,7 @@ import  errorBtn  from '../../images/error.svg';
 
 
 function InfoToolTip(props) {
+
     return (
      <>
      <div className={`infoToolTip ${props.isOpen ? 'popup__open' : ''}`}>

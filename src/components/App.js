@@ -158,7 +158,7 @@ function tokenCheck() {
         props.history.push('/main');
 
       }
-    });
+    }).catch(err => console.log(err));
   }
 }
 
@@ -166,10 +166,14 @@ function login(log) {
   if (!log){
     return;
   }
+
+  console.log(log)
+
   mestoAuth.authorize(log.PasswordInput,log.EmailInput).then((data) => {
+    console.log(data)
     if (data.token){
           handleLogin(log.EmailInput);
-          props.history.push('/main')
+          props.history.push('/main');
     }
   })
   .catch(err => console.log(err));
@@ -185,7 +189,7 @@ function register(reg) {
       setisInfoToolTip(true)
 
     }
-}).catch(err => ()=>{
+}).catch(err =>{
   console.log(err)
   setisInfoToolTip(true)
 });
