@@ -37,11 +37,10 @@ authorize(password, email) {
         password: password,
         email: email,
       })
-  }) .then((response) => {
-      return this._check(response)
-  })
+  }) .then((response => {
+    return response.json()
+  }))
   .then((data) => {
-    console.log(data)
     if (data.token){
       localStorage.setItem('token', data.token);
       return data;
@@ -60,9 +59,7 @@ getContent(token){
         'Authorization': `Bearer ${token}`
       }
   })
-  .then((response) => {
-    return this._check(response)
-})
+  .then(res => {return res.json()})
   .then(data => {return data})
 }
 

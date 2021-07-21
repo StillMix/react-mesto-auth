@@ -4,7 +4,6 @@ import Card from '../Card/Card.js';
 import Header from '../header/Header';
 import {  useHistory } from 'react-router-dom';
 import { UserContext } from '../../contexts/CurrentUserContext.js';
-import headerLogo from '../../images/header-logo.svg';
 
 
 

@@ -1,6 +1,5 @@
 import React, { useState,  useCallback} from 'react';
-import { BrowserRouter, Route, Switch, Redirect, withRouter } from 'react-router-dom';
-import Header from './header/Header';
+import {  Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Main from './main/Main';
 import Footer from './footer/Footer';
 import PopupWithForm from './PopupWithForm/PopupWithForm.js';
@@ -158,6 +157,7 @@ function tokenCheck() {
         props.history.push('/main');
 
       }
+
     }).catch(err => console.log(err));
   }
 }
@@ -170,7 +170,6 @@ function login(log) {
   console.log(log)
 
   mestoAuth.authorize(log.PasswordInput,log.EmailInput).then((data) => {
-    console.log(data)
     if (data.token){
           handleLogin(log.EmailInput);
           props.history.push('/main');
