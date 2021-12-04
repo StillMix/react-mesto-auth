@@ -37,7 +37,7 @@ authorize(password, email) {
         password: password,
         email: email,
       })
-  }) .then((response => {
+  }).then((response => {
     return response.json()
   }))
   .then((data) => {
